@@ -24,7 +24,7 @@ class TestApi extends React.Component {
             )
             .then(
                 result => {
-                    let arr;
+                    let arr = [];
                     result.forEach(elem => {
                         arr.append([elem.location.latitude, elem.location.longitude])
                     });
@@ -44,7 +44,7 @@ class TestApi extends React.Component {
                     <ul>
                     {items.map(item => (
                         <li key = {item}>
-                            {item.location.latitude} {item.location.longitude}
+                            {item.location.latitude} , {item.location.longitude}
                         </li>
                     ))}
                     </ul>

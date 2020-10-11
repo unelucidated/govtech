@@ -1,8 +1,9 @@
 import React from 'react';
+import Button from '@material-ui/core/Button';
 
 const ApiButton = (props) => {
     return (
-        <button id='ApiButton' onClick={props.handleChange}>Press to reload</button>
+        <Button id='ApiButton' onClick={props.handleChange} variant="contained">Press to reload</Button>
     )
 } 
 

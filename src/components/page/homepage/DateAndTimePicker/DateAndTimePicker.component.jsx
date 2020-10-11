@@ -12,7 +12,10 @@ const DateAndTimePicker = () => {
         onChange={date => setStartDate(date)}
         timeInputLabel="Time:"
         dateFormat="MM/dd/yyyy h:mm aa"
-        showTimeInput
+        showTimeSelect
+        showYearDropdown
+        scrollableMonthYearDropdown
+        maxDate={new Date()}
       />
     );
   };

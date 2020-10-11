@@ -1,12 +1,9 @@
 import React from 'react';
 
-function ScreenshotDisplay(screenshots) {
+function ScreenshotDisplay(props) {
     return (
         <div className='screenshot-display'>
-            {/* {screenshots.map(elem => {
-                <div>{elem}</div>
-            })} */}
-            pls fix
+            <img src={props.screenshots.image} alt=''/>
         </div>
         
     )

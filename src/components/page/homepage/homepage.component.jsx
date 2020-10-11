@@ -1,8 +1,10 @@
 import React from 'react';
 import ScreenshotsDisplay from './screenshots/screenshots.component.jsx';
-// import TestApi from '../../testapi/testapi.component';
-// import DateAndTimePicker from './DateAndTimePicker/DateAndTimePicker.component';
 import LocationList from './LocationList/LocationList.component';
+import DatePicker from 'react-datepicker';
+import moment from 'moment';
+
+import "react-datepicker/dist/react-datepicker.css";
 
 
 class HomePage extends React.Component {
@@ -15,17 +17,21 @@ class HomePage extends React.Component {
             location: [],
             weatherinfo: {},
             screenshots: [],
-            isLoaded: false
+            isLoaded: false,
+            startDate: new Date()
         };
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
+        this.handleDateChange = this.handleDateChange.bind(this);
         this.handleLocationChange = this.handleLocationChange.bind(this);
     }
 
-    //add in handlers for onChange of input fields, start off with button to submit form
     
     handleSubmit(event) {
-        fetch(`https://api.data.gov.sg/v1/transport/traffic-images?date_time=${this.state.time}`)
+        //convert to string
+        let chosenTime = moment(this.state.startDate).format('YYYY-MM-DDTHH:MM:SS')
+        console.log(chosenTime)
+        fetch(`https://api.data.gov.sg/v1/transport/traffic-images?date_time=${chosenTime}`)
             .then(res=>res.json())
             .then(
                 (result) => {
@@ -36,6 +42,7 @@ class HomePage extends React.Component {
                     return result.items[0]
                 }
             )
+            //fetch from API2, reverse geolocation
             // .then(
             //     result => {
             //         let arr = [];
@@ -52,19 +59,41 @@ class HomePage extends React.Component {
         this.setState({time: event.target.value})
     }
 
+    handleDateChange(date) {
+        this.setState({
+            startDate: date
+        })
+    }
+
     handleLocationChange(event) {
-        console.log(event);
-        this.setState({location: event.value})
+        this.setState({
+            location: event.value,
+        },
+            this.storeScreenshots
+        )
+    }
+
+    storeScreenshots() {
+        this.setState({
+            screenshots: this.state.items[this.state.location[0]]
+        })
     }
 
     render() {
         return (
             <div>
+                
                 <form onSubmit={this.handleSubmit}>
-                    <label>
-                        Time:
-                        <textarea value={this.setState.value} onChange={this.handleChange} />
-                    </label>
+                    <DatePicker 
+                        selected={ this.state.startDate }
+                        onChange={ this.handleDateChange }
+                        timeInputLabel="Time:"
+                        dateFormat="MM/dd/yyyy h:mm aa"
+                        showTimeSelect
+                        showYearDropdown
+                        scrollableMonthYearDropdown
+                        maxDate={new Date()}
+                    />
                     <input type="submit" value="Submit" />
                 </form>
                 <LocationList items={this.state.items} handleLocationChange={this.handleLocationChange}/>

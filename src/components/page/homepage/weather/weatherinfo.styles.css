@@ -1,0 +1,8 @@
+.weather-container {
+    margin: auto;
+    width: 50%;
+    border: 3px solid brown;
+    padding: 10px;
+    text-align: center;
+    vertical-align: middle;
+}

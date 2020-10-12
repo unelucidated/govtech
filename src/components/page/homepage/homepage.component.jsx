@@ -6,6 +6,7 @@ import moment from 'moment';
 
 import './homepage.styles.css';
 import "react-datepicker/dist/react-datepicker.css";
+import WeatherDisplay from './weather/weatherinfo.component.jsx';
 // import logo from './govtech.png';
 
 
@@ -15,11 +16,12 @@ class HomePage extends React.Component {
 
         this.state = {
             items: [],
-            location: [],
-            nearestWeatherLocation: [],
+            location: '',
+            weather:'',
             weatherHeader: [],
             weatherinfo: {},
-            screenshots: [],
+            toDisplay: [],
+            images: {},
             isLoaded: false,
             startDate: new Date()
         };
@@ -74,14 +76,29 @@ class HomePage extends React.Component {
             }
             return distances;
         }).then((result) => {
+            //shortestIndex contains the index of nearest weatherLocation to each camera location
             let shortestIndex = [];
             for (let i = 0; i < result.length; i++) {
                 shortestIndex.push(result[i].indexOf(Math.min(...result[i])))
             }
-            return shortestIndex;
+            //creating a header containing uniqueLocations
+            // let uniqueLocations = new Set(shortestIndex);
+            //locationDict to store key:value pairs of location:[images]
+            let locationDict = {};
+            for (let i = 0; i < shortestIndex.length; i++) {
+                let locationName = this.state.weatherHeader[shortestIndex[i]].name
+                if (!locationDict[locationName]) {
+                    locationDict[locationName] = []
+                    locationDict[locationName].push(this.state.items[i].image)
+                } else {
+                    locationDict[locationName].push(this.state.items[i].image)
+                }
+            }
+            // locationDict.uniqueLocations = uniqueLocations;
+            return locationDict;
         }).then((result) => {
             this.setState({
-                nearestWeatherLocation: result
+                images: result
             })
         }).catch(error => console.log(error))
         event.preventDefault();
@@ -98,38 +115,46 @@ class HomePage extends React.Component {
     }
 
     handleLocationChange(event) {
+        console.log(event);
+        let weather = '';
+        for (let i = 0; i < this.state.weatherinfo.forecasts.length; i++) {
+            if (this.state.weatherinfo.forecasts[i].area === event.value) {
+                weather = this.state.weatherinfo.forecasts[i].forecast
+                break;
+            }
+        }
+        //how to set weather in state
         this.setState({
             location: event.value,
-        },
-            this.storeScreenshots
-        )
-    }
-
-    storeScreenshots() {
-        this.setState({
-            screenshots: this.state.items[this.state.location[0]]
+            toDisplay: this.state.images[event.value],
+            weather: weather
         })
     }
 
     render() {
         return (
-            <div className={HomePage}>
-                {/* <img src={logo} alt="Logo" className="center"/> */}
-                <form onSubmit={this.handleSubmit}>
-                    <DatePicker 
-                        selected={ this.state.startDate }
-                        onChange={ this.handleDateChange }
-                        timeInputLabel="Time:"
-                        dateFormat="MM/dd/yyyy h:mm aa"
-                        showTimeSelect
-                        showYearDropdown
-                        scrollableMonthYearDropdown
-                        maxDate={new Date()}
-                    />
-                    <input type="submit" value="Submit" />
-                </form>
-                <LocationList items={this.state.items} handleLocationChange={this.handleLocationChange}/>
-                <ScreenshotsDisplay screenshots={this.state.screenshots} />
+            <div className="homepage">
+                <div className="form-container">
+                    <form onSubmit={this.handleSubmit}>
+                        <DatePicker 
+                            selected={ this.state.startDate }
+                            onChange={ this.handleDateChange }
+                            timeInputLabel="Time:"
+                            dateFormat="MM/dd/yyyy h:mm aa"
+                            showTimeSelect
+                            showYearDropdown
+                            scrollableMonthYearDropdown
+                            maxDate={new Date()}
+                        />
+                        <input type="submit" value="Submit" />
+                    </form>
+                </div>
+                <LocationList 
+                    images={this.state.images}
+                    handleLocationChange={this.handleLocationChange}
+                />
+                <WeatherDisplay weather={this.state.weather}/>
+                <ScreenshotsDisplay location={this.state.location} toDisplay={this.state.toDisplay} />
             </div>
         )
     }

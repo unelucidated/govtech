@@ -1,14 +1,15 @@
 import React from 'react';
+import './imagedisplay.styles.css';
 
-function ScreenshotDisplay(props) {
+function ImageDisplay(props) {
     console.log(props)
     if (props.toDisplay.length === 0) {
         return (
-            <div>Waiting for images...</div>
+            <div className="empty-container"></div>
         )
     } else {
         return (
-            <div>
+            <div className="flex-container">
                 {props.toDisplay.map(elem => (
                     <div>
                         <img src={elem} alt="new"/>
@@ -20,4 +21,4 @@ function ScreenshotDisplay(props) {
     
 }
 
-export default ScreenshotDisplay;
+export default ImageDisplay;

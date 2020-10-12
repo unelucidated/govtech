@@ -1,14 +1,12 @@
 import React from 'react';
-import ScreenshotsDisplay from './screenshots/screenshots.component.jsx';
+import ImageDisplay from './ImageDisplay/imagedisplay.component.jsx';
 import LocationList from './LocationList/LocationList.component';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
 
 import './homepage.styles.css';
 import "react-datepicker/dist/react-datepicker.css";
-import WeatherDisplay from './weather/weatherinfo.component.jsx';
-// import logo from './govtech.png';
-
+import WeatherDisplay from './Weatherinfo/weatherinfo.component.jsx';
 
 class HomePage extends React.Component {
     constructor(props) {
@@ -32,7 +30,7 @@ class HomePage extends React.Component {
     }
     
     handleSubmit(event) {
-        //convert to string
+        //convert time to date_time
         let chosenTime = moment(this.state.startDate).format('YYYY-MM-DDTHH:MM:SS')
         let promise1 = fetch(`https://api.data.gov.sg/v1/transport/traffic-images?date_time=${chosenTime}`)
             .then(res=>res.json())
@@ -81,8 +79,6 @@ class HomePage extends React.Component {
             for (let i = 0; i < result.length; i++) {
                 shortestIndex.push(result[i].indexOf(Math.min(...result[i])))
             }
-            //creating a header containing uniqueLocations
-            // let uniqueLocations = new Set(shortestIndex);
             //locationDict to store key:value pairs of location:[images]
             let locationDict = {};
             for (let i = 0; i < shortestIndex.length; i++) {
@@ -94,7 +90,6 @@ class HomePage extends React.Component {
                     locationDict[locationName].push(this.state.items[i].image)
                 }
             }
-            // locationDict.uniqueLocations = uniqueLocations;
             return locationDict;
         }).then((result) => {
             this.setState({
@@ -123,7 +118,6 @@ class HomePage extends React.Component {
                 break;
             }
         }
-        //how to set weather in state
         this.setState({
             location: event.value,
             toDisplay: this.state.images[event.value],
@@ -146,7 +140,7 @@ class HomePage extends React.Component {
                             scrollableMonthYearDropdown
                             maxDate={new Date()}
                         />
-                        <input type="submit" value="Submit" />
+                        <input type="submit" value="Submit" className="submit-button"/>
                     </form>
                 </div>
                 <LocationList 
@@ -154,7 +148,7 @@ class HomePage extends React.Component {
                     handleLocationChange={this.handleLocationChange}
                 />
                 <WeatherDisplay weather={this.state.weather}/>
-                <ScreenshotsDisplay location={this.state.location} toDisplay={this.state.toDisplay} />
+                <ImageDisplay location={this.state.location} toDisplay={this.state.toDisplay} />
             </div>
         )
     }

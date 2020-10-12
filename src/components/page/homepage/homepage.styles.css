@@ -1,0 +1,18 @@
+body {
+    background-color: blanchedalmond;
+    padding: 100px;
+}
+
+.HomePage {
+    width: 50%;
+    margin: 0 auto;
+}
+
+.center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+    max-height: 50%;
+    max-width: 50%;
+}

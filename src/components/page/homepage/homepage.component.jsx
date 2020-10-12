@@ -4,7 +4,9 @@ import LocationList from './LocationList/LocationList.component';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
 
+import './homepage.styles.css';
 import "react-datepicker/dist/react-datepicker.css";
+// import logo from './govtech.png';
 
 
 class HomePage extends React.Component {
@@ -14,6 +16,7 @@ class HomePage extends React.Component {
         this.state = {
             items: [],
             location: [],
+            nearestWeatherLocation: [],
             weatherHeader: [],
             weatherinfo: {},
             screenshots: [],
@@ -46,31 +49,41 @@ class HomePage extends React.Component {
                 .then(res=>res.json())
                 .then(
                     (result) => {
-                        console.log(result);
                         this.setState({
                             weatherHeader: result.area_metadata,
                             weatherinfo: result.items[0]
-                        })
+                        });
+                        return result.area_metadata
                     }
                 )
                 .catch(error => console.log(error))
         
+        //find the nearest locations
         Promise.all([promise1, promise2]).then((values) => {
-            console.log(values);
-        })
-
-        // const weatherReq = await fetch(`https://api.data.gov.sg/v1/environment/24-hour-weather-forecast?date_time=${chosenTime}`)
-            
-            //fetch from API2, reverse geolocation
-            // .then(
-            //     result => {
-            //         let arr = [];
-            //         result.forEach(elem => {
-            //             arr.append([elem.location.latitude, elem.location.longitude])
-            //         });
-            //     }
-            // )
-            
+            let distances = [];
+            //calculate array of distances of each camera location to nearest weather location
+            for (let i = 0; i < values[0].length; i++) {
+                let x = values[0][i].location.latitude;
+                let y = values[0][i].location.longitude;
+                let temp = [];
+                for (let j = 0; j < values[1].length; j++) {
+                    let dist = Math.sqrt((x-values[1][j].label_location.latitude)**2 + (y-values[1][j].label_location.longitude)**2)
+                    temp.push(dist);
+                }
+                distances.push(temp)
+            }
+            return distances;
+        }).then((result) => {
+            let shortestIndex = [];
+            for (let i = 0; i < result.length; i++) {
+                shortestIndex.push(result[i].indexOf(Math.min(...result[i])))
+            }
+            return shortestIndex;
+        }).then((result) => {
+            this.setState({
+                nearestWeatherLocation: result
+            })
+        }).catch(error => console.log(error))
         event.preventDefault();
     }
 
@@ -100,7 +113,8 @@ class HomePage extends React.Component {
 
     render() {
         return (
-            <div>
+            <div className={HomePage}>
+                {/* <img src={logo} alt="Logo" className="center"/> */}
                 <form onSubmit={this.handleSubmit}>
                     <DatePicker 
                         selected={ this.state.startDate }

@@ -1,7 +1,7 @@
 import React from 'react';
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
-import './LocationList.styles.css';
+import './locationlist.styles.css';
 
 const LocationList = props => {
     if (Object.keys(props.images).length ===0) {

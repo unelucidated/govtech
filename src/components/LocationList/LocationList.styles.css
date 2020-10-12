@@ -5,6 +5,7 @@
   width: 50%;
   max-height: 50%;
   max-width: 50%;
+  padding: 16px 16px 16px 16px;
 }
 
 .Dropdown-disabled {

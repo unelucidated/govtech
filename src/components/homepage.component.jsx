@@ -1,6 +1,6 @@
 import React from 'react';
 import ImageDisplay from './ImageDisplay/imagedisplay.component.jsx';
-import LocationList from './LocationList/LocationList.component';
+import LocationList from './LocationList/locationlist.component';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
 
@@ -130,23 +130,29 @@ class HomePage extends React.Component {
             <div className="homepage">
                 <div className="form-container">
                     <form onSubmit={this.handleSubmit}>
-                        <DatePicker 
-                            selected={ this.state.startDate }
-                            onChange={ this.handleDateChange }
-                            timeInputLabel="Time:"
-                            dateFormat="MM/dd/yyyy h:mm aa"
-                            showTimeSelect
-                            showYearDropdown
-                            scrollableMonthYearDropdown
-                            maxDate={new Date()}
-                        />
-                        <input type="submit" value="Submit" className="submit-button"/>
+                        <div className="datepicker-container">
+                            <DatePicker 
+                                selected={ this.state.startDate }
+                                onChange={ this.handleDateChange }
+                                timeInputLabel="Time:"
+                                dateFormat="MM/dd/yyyy h:mm aa"
+                                showTimeSelect
+                                showYearDropdown
+                                scrollableMonthYearDropdown
+                                maxDate={new Date()}
+                            />
+                        </div>
+                        <div className="submit-button-container">
+                            <input type="submit" value="Submit" className="submit-button"/>
+                        </div>
                     </form>
                 </div>
-                <LocationList 
-                    images={this.state.images}
-                    handleLocationChange={this.handleLocationChange}
-                />
+                <div className="locationlist-container">
+                    <LocationList 
+                        images={this.state.images}
+                        handleLocationChange={this.handleLocationChange}
+                    />
+                </div>
                 <WeatherDisplay weather={this.state.weather}/>
                 <ImageDisplay location={this.state.location} toDisplay={this.state.toDisplay} />
             </div>

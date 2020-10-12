@@ -32,3 +32,9 @@ body {
     border-radius: 8px;
     color: white;
 }
+
+.locationlist-container {
+    padding: 16px 16px 16px 16px;
+    border: 1px solid;
+    border-color: black;
+}

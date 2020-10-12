@@ -10,7 +10,6 @@ const LocationList = props => {
         props.items.map((item, index) => 
             location.push([index, item.location.latitude, item.location.longitude])
         )
-        console.log(location);
         return (
             <Dropdown options={location} onChange={props.handleLocationChange} placeholder="Select a location"/>
         )

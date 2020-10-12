@@ -12,9 +12,9 @@ class HomePage extends React.Component {
         super(props);
 
         this.state = {
-            time: '',
             items: [],
             location: [],
+            weatherHeader: [],
             weatherinfo: {},
             screenshots: [],
             isLoaded: false,
@@ -25,13 +25,11 @@ class HomePage extends React.Component {
         this.handleDateChange = this.handleDateChange.bind(this);
         this.handleLocationChange = this.handleLocationChange.bind(this);
     }
-
     
     handleSubmit(event) {
         //convert to string
         let chosenTime = moment(this.state.startDate).format('YYYY-MM-DDTHH:MM:SS')
-        console.log(chosenTime)
-        fetch(`https://api.data.gov.sg/v1/transport/traffic-images?date_time=${chosenTime}`)
+        let promise1 = fetch(`https://api.data.gov.sg/v1/transport/traffic-images?date_time=${chosenTime}`)
             .then(res=>res.json())
             .then(
                 (result) => {
@@ -39,9 +37,30 @@ class HomePage extends React.Component {
                         items: result.items[0].cameras,
                         isLoaded: true
                     });
-                    return result.items[0]
+                    return result.items[0].cameras
                 }
             )
+            .catch(error => console.log(error))
+        
+        let promise2 = fetch(`https://api.data.gov.sg/v1/environment/2-hour-weather-forecast?date_time=${chosenTime}`)
+                .then(res=>res.json())
+                .then(
+                    (result) => {
+                        console.log(result);
+                        this.setState({
+                            weatherHeader: result.area_metadata,
+                            weatherinfo: result.items[0]
+                        })
+                    }
+                )
+                .catch(error => console.log(error))
+        
+        Promise.all([promise1, promise2]).then((values) => {
+            console.log(values);
+        })
+
+        // const weatherReq = await fetch(`https://api.data.gov.sg/v1/environment/24-hour-weather-forecast?date_time=${chosenTime}`)
+            
             //fetch from API2, reverse geolocation
             // .then(
             //     result => {
@@ -51,7 +70,7 @@ class HomePage extends React.Component {
             //         });
             //     }
             // )
-            .catch(error => console.log(error))
+            
         event.preventDefault();
     }
 
@@ -82,7 +101,6 @@ class HomePage extends React.Component {
     render() {
         return (
             <div>
-                
                 <form onSubmit={this.handleSubmit}>
                     <DatePicker 
                         selected={ this.state.startDate }
